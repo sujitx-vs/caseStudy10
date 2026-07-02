@@ -1,29 +1,32 @@
-# Use Python 3.11 slim image
-FROM python:3.11-slim
+# Python 3.13.4
+FROM python:3.13.4-slim
 
-# Install Java (required for Spark)
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install Java (required by Spark)
 RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk && \
+    apt-get install -y default-jdk && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Set Java environment variables
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-ENV PATH="$JAVA_HOME/bin:$PATH"
+# Set JAVA_HOME
+ENV JAVA_HOME=/usr/lib/jvm/default-java
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements first (better Docker layer caching)
+# Copy requirements first
 COPY requirements.txt .
 
 # Install Python packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project
+# Copy project files
 COPY . .
 
-# Expose Jupyter Notebook port
+# Expose Jupyter port
 EXPOSE 8888
 
 # Start Jupyter Notebook
