@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: social-media-sentiment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: social-media-sentiment
+
+  template:
+    metadata:
+      labels:
+        app: social-media-sentiment
+
+    spec:
+      containers:
+      - name: social-media-sentiment
+
+        image: social-media-sentiment:latest
+
+        imagePullPolicy: Never
+
+        ports:
+        - containerPort: 8888
